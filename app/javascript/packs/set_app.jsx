@@ -8,16 +8,6 @@ import PropTypes from 'prop-types';
 
 import SetGame from '../components/SetGame';
 
-const Hello = props => <div>Hello {props.name}!</div>;
-
-Hello.defaultProps = {
-  name: 'David'
-};
-
-Hello.propTypes = {
-  name: PropTypes.string
-};
-
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(<SetGame name="React" />, document.getElementById('set-app'));
+  ReactDOM.render(<SetGame />, document.getElementById('set-app'));
 });
