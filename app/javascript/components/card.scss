@@ -1,7 +1,10 @@
+$width: 225px;
+$height: 325px;
+
 .card {
   color: red;
-  width: 30%;
-  height: 25%;
+  width: $width;
+  height: $height;
 
   border: 2px solid gainsboro;
   margin-top: 10px;

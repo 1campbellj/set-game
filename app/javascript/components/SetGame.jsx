@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ScoreArea from './ScoreArea';
 import Card from './Card';
 import './set-game';
 
@@ -100,11 +101,19 @@ function SetGame() {
 
   return (
     <div className="board">
-      {cardData.map((data, idx) => {
-        return (
-          <Card key={idx} {...data} handleClick={() => toggleSelection(idx)} />
-        );
-      })}
+      <ScoreArea />
+      <div className="board_card-area">
+        {cardData.map((data, idx) => {
+          return (
+            <Card
+              key={idx}
+              {...data}
+              handleClick={() => toggleSelection(idx)}
+            />
+          );
+        })}
+      </div>
+      <ScoreArea />
     </div>
   );
 }
