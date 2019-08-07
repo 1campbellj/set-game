@@ -7,31 +7,72 @@ const colors = ['red', 'green', 'purple'];
 const shapes = ['oval', 'diamond', 'squiggle'];
 const patterns = ['filled', 'empty', 'hashed'];
 
+const generateCardData = () => {
+  function rand() {
+    return Math.floor(Math.random() * Math.floor(3));
+  }
+
+  return {
+    color: colors[rand()],
+    shape: shapes[rand()],
+    pattern: patterns[rand()],
+    number: rand() + 1
+  };
+};
+
+const isSet = cards => {
+  let colorList = [];
+  let shapeList = [];
+  let patternList = [];
+
+  cards.forEach(c => {
+    if (!colorList.includes(c.color)) {
+      colorList.push(c.color);
+    }
+    if (!shapeList.includes(c.shape)) {
+      shapeList.push(c.shape);
+    }
+    if (!patternList.includes(c.pattern)) {
+      patternList.push(c.pattern);
+    }
+  });
+
+  if (
+    (colorList.length === 1 || colorList.length == 3) &&
+    (shapeList.length === 1 || shapeList.length === 3) &&
+    (patternList.length === 1 || patternList.length === 3)
+  ) {
+    console.log('FOUND A SET!');
+    return true;
+  } else {
+    console.log(
+      `No Set! Colors: ${colorList.length}, Shapes: ${
+        shapeList.length
+      }, Patterns: ${patternList.length}`
+    );
+    return false;
+  }
+};
+
 function SetGame() {
   const [selection, setSelection] = useState([]);
   const [cardData, setCardData] = useState([]);
   const [numSelected, setNumSelected] = useState(0);
 
-  useEffect(() => {
-    function rand() {
-      return Math.floor(Math.random() * Math.floor(3));
-    }
-
+  const resetCards = () => {
     const numCards = 12;
     const data = [];
 
     for (let i = 0; i < numCards; i++) {
-      data.push({
-        color: colors[rand()],
-        shape: shapes[rand()],
-        pattern: patterns[rand()]
-      });
+      data.push(generateCardData());
     }
 
     setCardData(data);
-    let initialSelection = new Array(12);
-    initialSelection.fill(false);
     setSelection(new Array(12).fill(false));
+  };
+
+  useEffect(() => {
+    resetCards();
   }, []);
 
   useEffect(() => {
@@ -41,12 +82,21 @@ function SetGame() {
   }, [numSelected]);
 
   useEffect(() => {
-    console.log('Selection', selection);
-  }, [selection]);
-
-  useEffect(() => {
-    console.log('NumSelected:', numSelected);
-  }, [numSelected]);
+    if (cardData.length !== 12) {
+      return;
+    }
+    for (let i = 0; i < 10; i++) {
+      for (let j = 1; j < 11; j++) {
+        for (let k = 2; k < 12; k++) {
+          if (isSet([cardData[i], cardData[j], cardData[k]])) {
+            return;
+          }
+        }
+      }
+    }
+    console.log('Had to reset cards');
+    resetCards();
+  }, [cardData]);
 
   const toggleSelection = idx => {
     let temp = [...selection];
@@ -68,35 +118,23 @@ function SetGame() {
       }
     });
 
-    let colorList = [];
-    let shapeList = [];
-    let patternList = [];
+    if (isSet(selectedCards)) {
+      clearSelected();
+    }
 
-    selectedCards.forEach(c => {
-      if (!colorList.includes(c.color)) {
-        colorList.push(c.color);
-      }
-      if (!shapeList.includes(c.shape)) {
-        shapeList.push(c.shape);
-      }
-      if (!patternList.includes(c.pattern)) {
-        patternList.push(c.pattern);
+    setSelection(new Array(12).fill(false));
+    setNumSelected(0);
+  };
+
+  const clearSelected = () => {
+    let newData = Array.from(cardData);
+
+    selection.forEach((s, idx) => {
+      if (s) {
+        newData[idx] = generateCardData();
       }
     });
-
-    if (
-      (colorList.length === 1 || colorList.length == 3) &&
-      (shapeList.length === 1 || shapeList.length === 3) &&
-      (patternList.length === 1 || patternList.length === 3)
-    ) {
-      console.log('FOUND A SET!');
-    } else {
-      console.log(
-        `No Set! Colors: ${colorList.length}, Shapes: ${
-          shapeList.length
-        }, Patterns: ${patternList.length}`
-      );
-    }
+    setCardData(newData);
   };
 
   return (
@@ -108,6 +146,7 @@ function SetGame() {
             <Card
               key={idx}
               {...data}
+              selected={selection[idx]}
               handleClick={() => toggleSelection(idx)}
             />
           );

@@ -1,8 +1,11 @@
 $width: 225px;
 $height: 325px;
 
+$red: #f50a0a;
+$green: #00b055;
+$purple: #6f05a1;
+
 .card {
-  color: red;
   width: $width;
   height: $height;
 
@@ -11,4 +14,89 @@ $height: 325px;
   margin-bottom: 10px;
 
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &--selected {
+    border-color: #356af0;
+  }
+
+  &--filled.card--red {
+    svg {
+      fill: $red;
+    }
+  }
+
+  &--filled.card--green {
+    svg {
+      fill: $green;
+    }
+  }
+
+  &--filled.card--purple {
+    svg {
+      fill: $purple;
+    }
+  }
+
+  &--red {
+    svg,
+    line {
+      stroke: $red;
+    }
+  }
+
+  &--purple {
+    svg,
+    line {
+      stroke: $purple;
+    }
+  }
+
+  &--green {
+    svg,
+    line {
+      stroke: $green;
+    }
+  }
+
+  svg {
+    height: 150px;
+    fill: none;
+    stroke-width: 2px;
+    transform: rotate(90deg);
+    overflow: visible;
+  }
+
+  .card_shape-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &.three {
+    .card-babysitter:nth-of-type(2) {
+      margin-top: -50px;
+      margin-bottom: -50px;
+    }
+  }
+
+  &.two {
+    .card-babysitter:nth-of-type(1) {
+      margin-top: 50px;
+    }
+    .card-babysitter:nth-of-type(2) {
+      margin-top: -50px;
+      margin-bottom: 50px;
+    }
+  }
+
+  .card-babysitter {
+    display: flex;
+    justify-content: center;
+  }
 }
