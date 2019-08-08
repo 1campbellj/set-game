@@ -6,6 +6,7 @@ import './set-game';
 const colors = ['red', 'green', 'purple'];
 const shapes = ['oval', 'diamond', 'squiggle'];
 const patterns = ['filled', 'empty', 'hashed'];
+const numSets = 81;
 
 const generateCardData = () => {
   function rand() {
@@ -58,6 +59,8 @@ function SetGame() {
   const [selection, setSelection] = useState([]);
   const [cardData, setCardData] = useState([]);
   const [numSelected, setNumSelected] = useState(0);
+  const [currentUser, setCurrentUser] = useState(1);
+  const [scores, setScores] = useState([]);
 
   const resetCards = () => {
     const numCards = 12;
@@ -72,7 +75,7 @@ function SetGame() {
   };
 
   useEffect(() => {
-    resetCards();
+    resetGame(false);
   }, []);
 
   useEffect(() => {
@@ -98,6 +101,19 @@ function SetGame() {
     resetCards();
   }, [cardData]);
 
+  const resetGame = shouldConfirm => {
+    let confirmed = false;
+    if (shouldConfirm) {
+      if (confirm('Reset game state?')) {
+      }
+    }
+    if (shouldConfirm && !confirmed) {
+      return;
+    }
+    setScores(new Array(2).fill(0));
+    resetCards();
+  };
+
   const toggleSelection = idx => {
     let temp = [...selection];
     if (selection[idx]) {
@@ -119,11 +135,19 @@ function SetGame() {
     });
 
     if (isSet(selectedCards)) {
+      scoreCurrentUser();
       clearSelected();
     }
 
     setSelection(new Array(12).fill(false));
     setNumSelected(0);
+  };
+
+  const scoreCurrentUser = () => {
+    let newScores = Array.from(scores);
+
+    newScores[currentUser] = newScores[currentUser] + 1;
+    setScores(newScores);
   };
 
   const clearSelected = () => {
@@ -139,7 +163,13 @@ function SetGame() {
 
   return (
     <div className="board">
-      <ScoreArea />
+      <ScoreArea
+        currentUser={currentUser}
+        userId={0}
+        setUser={setCurrentUser}
+        scores={scores}
+        resetGame={resetGame}
+      />
       <div className="board_card-area">
         {cardData.map((data, idx) => {
           return (
@@ -152,7 +182,13 @@ function SetGame() {
           );
         })}
       </div>
-      <ScoreArea />
+      <ScoreArea
+        currentUser={currentUser}
+        userId={1}
+        setUser={setCurrentUser}
+        scores={scores}
+        resetGame={resetGame}
+      />
     </div>
   );
 }
